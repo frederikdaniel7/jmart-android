@@ -12,9 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.FrederikDaniel_jmartMH.model.Account;
 import com.FrederikDaniel_jmartMH.request.LoginRequest;
@@ -25,10 +28,12 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, Response.ErrorListener, Response.Listener<String> {
 
     private static final Gson gson = new Gson();
-    private static Account loggedAccount = null;
+    private static Account loggedAccount;
     private EditText ETPassword;
     private EditText ETEmail;
     private Button loginButton;
@@ -71,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent moveIntent = new Intent(LoginActivity.this, MainActivity.class);
         try{
             JSONObject jsonObject = new JSONObject(response);
-            moveIntent.putExtra("id", jsonObject.getInt("id"));
+            loggedAccount = gson.fromJson(jsonObject.toString(), Account.class);
         }catch (Exception e){
             Toast.makeText(this, "Login Failed", Toast.LENGTH_LONG).show();
             return;
@@ -82,7 +87,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, "Login Failed", Toast.LENGTH_LONG).show();
+        error.printStackTrace();
+        Toast.makeText(this, "Login Failed Connection", Toast.LENGTH_LONG).show();
     }
 
     @Override
