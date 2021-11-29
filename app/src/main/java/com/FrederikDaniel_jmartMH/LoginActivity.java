@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onErrorResponse(VolleyError error) {
         error.printStackTrace();
-        Toast.makeText(this, "Login Failed to connect", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Login Failed to connect..", Toast.LENGTH_LONG).show();
     }
 
     @Override

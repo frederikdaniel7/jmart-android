@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         }catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(RegisterActivity.this, "Register Failed, check input", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Register Failed, check input!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 };
