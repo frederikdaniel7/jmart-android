@@ -6,7 +6,7 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
+//perbaikan CS9
 public class RegisterRequest extends StringRequest {
     private static final String URL = "http://10.0.2.2:5000/account/register";
     private final Map <String,String> params ;
