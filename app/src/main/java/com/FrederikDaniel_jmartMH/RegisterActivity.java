@@ -44,14 +44,14 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         }catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(RegisterActivity.this, "Register Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Register Failed, check input", Toast.LENGTH_SHORT).show();
                         }
                     }
                 };
                 Response.ErrorListener errorListener = new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(RegisterActivity.this, "Register Failed Bro", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Register Failed to write", Toast.LENGTH_SHORT).show();
                     }
                 };
                 String name = edtNameRegister.getText().toString();
