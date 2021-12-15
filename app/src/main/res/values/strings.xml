@@ -16,6 +16,11 @@
     <string name="addbox">addBox</string>
     <string name="person">Person</string>
     <string name="product_name">Product Name</string>
+    <string name="weight">Weight</string>
+    <string name="condition">Condition</string>
+    <string name="discount">Discount</string>
+    <string name="shipmen_plan">Shipmen Plan</string>
+    <string name="category">Category</string>
 
     <string-array name="shipmentPlans">
         <item>INSTANT</item>

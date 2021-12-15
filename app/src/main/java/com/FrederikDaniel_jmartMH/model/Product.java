@@ -2,9 +2,9 @@ package com.FrederikDaniel_jmartMH.model;
 
 public class Product extends Serializable {
     public int accountId;
-    double discount;
-    double price;
-    byte shipmentPlans;
+    public double discount;
+    public double price;
+    public byte shipmentPlans;
     public String name;
     public int weight;
     public boolean conditionUsed;
@@ -16,5 +16,10 @@ public class Product extends Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public boolean getconditionUsed()
+    {
+        return conditionUsed;
     }
 }

@@ -2,7 +2,11 @@ package com.FrederikDaniel_jmartMH;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,10 +19,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -47,7 +55,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity<account> extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity<account> extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
     public static List<Product> productList = new ArrayList<>();
     public static List<String> productnameList = new ArrayList<>();
     private TextView textView;
@@ -66,7 +74,8 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
     private Toolbar mTopToolbar;
     private ViewPager viewPager;
     private TabLayout tab_Layout;
-
+    private String shipmentPlan;
+    private String condition;
     public static String[] productCategory = {"BOOK", "KITCHEN", "ELECTRONIC", "FASHION", "GAMING", "GADGET", "MOTHERCARE", "COSMETICS",
             "HEALTHCARE", "FURNITURE", "JEWELRY", "TOYS", "FNB", "STATIONERY", "SPORTS", "AUTOMOTIVE",
             "PETCARE", "ART_CRAFT", "CARPENTRY", "MISCELLANEOUS", "PROPERTY", "TRAVEL", "WEDDING"};
@@ -130,6 +139,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         page = 0;
 
         ShowProductList(page, 3);
+        listView.setOnItemClickListener(this);
     }
 
     @Override
@@ -261,54 +271,73 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         queue.add(filterRequest);
     }
 
-//    public void ShowProductListFiltered(int page, Integer pageSize, String name, Integer highestPrice, Integer lowestPrice, ProductCategory productCategory){
-//        Response.Listener<String> listener = new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                try {
-//                    productList.clear();
-//                    JSONArray object = new JSONArray(response);
-//                    Type productListType = new TypeToken<ArrayList<Product>>(){}.getType();
-//                    productList = gson.fromJson(response, productListType);
-//                    for (Product product : productList) {
-//                        productnameList.add(product.getName());
-//                    }
-//                    Log.d("ProductFragment", "Array Size: " + productnameList.size());
-//                    ArrayAdapter adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.product_list_view, productnameList);
-//                    listView.setAdapter(adapter);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//
-//        Response.ErrorListener errorListener = new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
-//            }
-//        };
-//        FilterRequest filterRequest;
-//        if (highestPrice == null && lowestPrice == null){
-//            Log.d("If condition 1", "1st");
-//            filterRequest = new FilterRequest(page, account.id, name, productCategory, listener, errorListener);
-//        }
-//        else if(highestPrice == null){
-//            Log.d("If condition 2", "2nd");
-//            filterRequest = new FilterRequest(page, account.id, name, lowestPrice, productCategory, listener, errorListener);
-//        }
-//        else if(lowestPrice == null){
-//            Log.d("If condition 3", "3rd");
-//            filterRequest = new FilterRequest(name, page, account.id, highestPrice, productCategory, listener, errorListener);
-//        }
-//        else {
-//            Log.d("If condition 4", "4th");
-//            filterRequest = new FilterRequest(page, account.id, name, lowestPrice, highestPrice, productCategory, listener, errorListener);
-//        }
-//        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-//        queue.add(filterRequest);
-//
-//    }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Product product = productList.get(position);
+
+        shipmentPlan = "REGULER";
+        if (product.shipmentPlans == 1) {
+            shipmentPlan = "INSTANT";
+        } else if (product.shipmentPlans == 2) {
+            shipmentPlan = "SAME DAY";
+        } else if (product.shipmentPlans == 4) {
+            shipmentPlan = "NEXT DAY";
+        } else if (product.shipmentPlans == 8) {
+            shipmentPlan = "REGULER";
+        } else if (product.shipmentPlans == 16) {
+            shipmentPlan = "KARGO";
+        }
+
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.activity_product_detail_dialog);
+
+
+        final TextView productName = dialog.findViewById(R.id.productName);
+        final TextView productWeight = dialog.findViewById(R.id.productWeight);
+        final TextView productCondition = dialog.findViewById(R.id.productCondition);
+        final TextView productPrice = dialog.findViewById(R.id.productPrice);
+        final TextView productDiscount = dialog.findViewById(R.id.productDiscount);
+        final TextView productShipmentplan = dialog.findViewById(R.id.productShipmentplan);
+        final TextView productCategory = dialog.findViewById(R.id.productCategory);
+        final Button buyButton = dialog.findViewById(R.id.buttonBuy);
+        final ImageButton detailButton = dialog.findViewById(R.id.detailButton);
+        final LinearLayout detailView = dialog.findViewById(R.id.detailView);
+        detailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(detailView.getVisibility()== View.GONE)
+                {
+                    detailButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24);
+                    detailView.setVisibility(View.VISIBLE);
+
+                }
+                else {
+                    detailView.setVisibility(View.GONE);
+                    detailButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24);
+                }
+            }
+        });
+
+        condition = "New";
+        if (product.getconditionUsed()) {
+            condition = "Used";
+        } else {
+            condition = "New";
+        }
+
+        productName.setText(product.name);
+        productPrice.setText("Rp. " + product.price);
+        productWeight.setText(product.weight + " Kg");
+        productCondition.setText(condition);
+
+        productDiscount.setText(product.discount + " %");
+        productShipmentplan.setText(shipmentPlan);
+        productCategory.setText(product.category + "");
+
+        dialog.show();
+    }
 
 
 
@@ -359,8 +388,12 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
             applyFilter = false;
             editPage.setText("" + 1);
             Toast.makeText(MainActivity.this, "Filter Cleared!", Toast.LENGTH_SHORT).show();
-
         }
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 }
