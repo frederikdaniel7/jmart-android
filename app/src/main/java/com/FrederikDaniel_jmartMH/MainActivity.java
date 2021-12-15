@@ -129,8 +129,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         spinnerCategory.setAdapter(adapter);
         page = 0;
 
-        ShowProductList(page, 1);
-
+        ShowProductList(page, 3);
     }
 
     @Override
@@ -197,101 +196,171 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(RequestFactory.getPage("product", page, pageSize, stringListener, errorListener));
     }
+    public void GetshowFilterProductList(int page, int pageSize) {
+        String filteredname = editName.getText().toString();
+        Integer minP;
+        Integer maxP;
+        if (editLowestprice.getText().toString().equals("")) {
+            minP = null;
+        } else {
+            minP = Integer.valueOf(editLowestprice.getText().toString());
+        }
 
-    public void ShowProductListFiltered(int page, Integer pageSize, String name, Integer highestPrice, Integer lowestPrice, ProductCategory productCategory){
+        if (editHighestprice.getText().toString().equals("")) {
+            maxP = null;
+        } else {
+            maxP = Integer.valueOf(editHighestprice.getText().toString());
+        }
+        ProductCategory category = ProductCategory.BOOK;
+        String productcategory = spinnerCategory.getSelectedItem().toString();
+        for (ProductCategory p : ProductCategory.values()) {
+            if (p.toString().equals(productcategory)) {
+                category = p;
+            }
+        }
+
         Response.Listener<String> listener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     productList.clear();
-                    JSONArray object = new JSONArray(response);
-                    Type productListType = new TypeToken<ArrayList<Product>>(){}.getType();
-                    productList = gson.fromJson(response, productListType);
-                    for (Product product : productList) {
-                        productnameList.add(product.getName());
+                    JSONArray jsonArray = new JSONArray(response);
+                    Type PListType = new TypeToken<ArrayList<Product>>(){}.getType();
+                    productList = gson.fromJson(response, PListType);
+                    if(!productList.isEmpty()){
+                        List<String> productnameList = new ArrayList<>();
+                        for (Product product : productList) {
+                            productnameList.add(product.name);
+                        }
+                        ArrayAdapter adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.product_list_view, productnameList);
+                        listView.setAdapter(adapter);
                     }
-                    Log.d("ProductFragment", "Array Size: " + productnameList.size());
-                    ArrayAdapter adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.product_list_view, productnameList);
-                    listView.setAdapter(adapter);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
         };
-
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Error! Already in the last filter!", Toast.LENGTH_SHORT).show();
             }
         };
         FilterRequest filterRequest;
-        if (highestPrice == null && lowestPrice == null){
-            Log.d("If condition 1", "1st");
-            filterRequest = new FilterRequest(page, account.id, name, productCategory, listener, errorListener);
-        }
-        else if(highestPrice == null){
-            Log.d("If condition 2", "2nd");
-            filterRequest = new FilterRequest(page, account.id, name, lowestPrice, productCategory, listener, errorListener);
-        }
-        else if(lowestPrice == null){
-            Log.d("If condition 3", "3rd");
-            filterRequest = new FilterRequest(name, page, account.id, highestPrice, productCategory, listener, errorListener);
-        }
-        else {
-            Log.d("If condition 4", "4th");
-            filterRequest = new FilterRequest(page, account.id, name, lowestPrice, highestPrice, productCategory, listener, errorListener);
+        if (maxP == null && minP == null) {
+            filterRequest = new FilterRequest(page, pageSize, account.id, filteredname, category, listener, errorListener);
+        } else if (maxP == null) {
+            filterRequest = new FilterRequest(page, pageSize, account.id, minP, filteredname, category, listener, errorListener);
+        } else if (minP == null) {
+            filterRequest = new FilterRequest(filteredname, page, account.id, maxP, category, listener, errorListener);
+        } else {
+            filterRequest = new FilterRequest(page, account.id, filteredname, minP, maxP, category, listener, errorListener);
         }
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(filterRequest);
-
     }
+
+//    public void ShowProductListFiltered(int page, Integer pageSize, String name, Integer highestPrice, Integer lowestPrice, ProductCategory productCategory){
+//        Response.Listener<String> listener = new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    productList.clear();
+//                    JSONArray object = new JSONArray(response);
+//                    Type productListType = new TypeToken<ArrayList<Product>>(){}.getType();
+//                    productList = gson.fromJson(response, productListType);
+//                    for (Product product : productList) {
+//                        productnameList.add(product.getName());
+//                    }
+//                    Log.d("ProductFragment", "Array Size: " + productnameList.size());
+//                    ArrayAdapter adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.product_list_view, productnameList);
+//                    listView.setAdapter(adapter);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//
+//        Response.ErrorListener errorListener = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+//            }
+//        };
+//        FilterRequest filterRequest;
+//        if (highestPrice == null && lowestPrice == null){
+//            Log.d("If condition 1", "1st");
+//            filterRequest = new FilterRequest(page, account.id, name, productCategory, listener, errorListener);
+//        }
+//        else if(highestPrice == null){
+//            Log.d("If condition 2", "2nd");
+//            filterRequest = new FilterRequest(page, account.id, name, lowestPrice, productCategory, listener, errorListener);
+//        }
+//        else if(lowestPrice == null){
+//            Log.d("If condition 3", "3rd");
+//            filterRequest = new FilterRequest(name, page, account.id, highestPrice, productCategory, listener, errorListener);
+//        }
+//        else {
+//            Log.d("If condition 4", "4th");
+//            filterRequest = new FilterRequest(page, account.id, name, lowestPrice, highestPrice, productCategory, listener, errorListener);
+//        }
+//        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+//        queue.add(filterRequest);
+//
+//    }
+
+
+
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.goButton){
+        if(v.getId() == R.id.goButton)
+        {
             page = Integer.valueOf(editPage.getText().toString());
             page--;
-            ShowProductList(page, 1);
+            if (applyFilter) {
+                GetshowFilterProductList(page, 3);
+            } else {
+                ShowProductList(page,3);
+            }
         }
         else if(v.getId() == R.id.nextButton){
             page++;
-            ShowProductList(page, 1);
+            if (applyFilter) {
+                GetshowFilterProductList(page, 3);
+            } else {
+                ShowProductList(page,3);
+            }
         }
         else if(v.getId() == R.id.prevButton){
-            if(page == 0){
-                Toast.makeText(MainActivity.this, "You are at the first page already", Toast.LENGTH_SHORT).show();
-            }
-            else{
+            if (page == 0) {
+                Toast.makeText(MainActivity.this, "You're already in Page 1", Toast.LENGTH_SHORT).show();
+            } else if (page >= 1) {
                 page--;
-                ShowProductList(page, 1);
-            }
-        }
-        else if(v.getId() == R.id.applyButtonFilter){
-            String dataName = editName.getText().toString();
-            String minPrice = editLowestprice.getText().toString();
-            String maxPrice = editHighestprice.getText().toString();
-            Integer dataHighestprice, dataLowestprice;
-            if(TextUtils.isEmpty(minPrice)){
-                dataLowestprice = null;
-            }
-            else{
-                dataLowestprice = Integer.valueOf(editLowestprice.getText().toString());
-            }
-            if(TextUtils.isEmpty(maxPrice)){
-                dataHighestprice = null;
-            }
-            else {
-                dataHighestprice = Integer.valueOf(editLowestprice.getText().toString());
-            }
-
-            ProductCategory category = ProductCategory.BOOK;
-            String dataSpinner = spinnerCategory.getSelectedItem().toString();
-            for(ProductCategory productCategory : ProductCategory.values()){
-                if(productCategory.toString().equals(dataSpinner)){
-                    category = productCategory;
+                if (applyFilter) {
+                    GetshowFilterProductList(page, 3);
+                } else {
+                    ShowProductList(page,3);
                 }
             }
-            ShowProductListFiltered(page, 1, dataName, dataHighestprice, dataLowestprice, category);
         }
+        else if (v.getId() == R.id.applyButtonFilter)
+        {
+            GetshowFilterProductList(0, 3);
+            applyFilter = true;
+            editPage.setText("" + 1);
+            Toast.makeText(MainActivity.this, "Filter Success!", Toast.LENGTH_SHORT).show();
+        }
+
+        else if(v.getId() == R.id.clearBT)
+        {
+            page = 0;
+            GetshowFilterProductList(page,3);
+            applyFilter = false;
+            editPage.setText("" + 1);
+            Toast.makeText(MainActivity.this, "Filter Cleared!", Toast.LENGTH_SHORT).show();
+
+        }
+
     }
 }
