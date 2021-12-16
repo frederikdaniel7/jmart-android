@@ -14,7 +14,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,6 +52,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -70,7 +73,8 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
     private TabLayout tabLayout;
     private CardView productCardview, filterCardview;
     private static final Gson gson = new Gson();
-    private int page;
+    private int page, totalItem;
+    private double totalPrice;
     private Toolbar mTopToolbar;
     private ViewPager viewPager;
     private TabLayout tab_Layout;
@@ -254,7 +258,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Error! Already in the last filter!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "You are already in the last page!", Toast.LENGTH_SHORT).show();
             }
         };
         FilterRequest filterRequest;
@@ -293,7 +297,6 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.activity_product_detail_dialog);
 
-
         final TextView productName = dialog.findViewById(R.id.productName);
         final TextView productWeight = dialog.findViewById(R.id.productWeight);
         final TextView productCondition = dialog.findViewById(R.id.productCondition);
@@ -331,11 +334,67 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         productPrice.setText("Rp. " + product.price);
         productWeight.setText(product.weight + " Kg");
         productCondition.setText(condition);
-
         productDiscount.setText(product.discount + " %");
         productShipmentplan.setText(shipmentPlan);
         productCategory.setText(product.category + "");
+        buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(MainActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.activity_payment_dialog);
+                final TextView productName = dialog.findViewById(R.id.productName);
+                final TextView productWeight = dialog.findViewById(R.id.productWeight);
+                final TextView productCondition = dialog.findViewById(R.id.productCondition);
+                final TextView productPrice = dialog.findViewById(R.id.productPrice);
+                final TextView productDiscount = dialog.findViewById(R.id.productDiscount);
+                final TextView productShipmentplan = dialog.findViewById(R.id.productShipmentplan);
+                final TextView productCategory = dialog.findViewById(R.id.productCategory);
+                final TextView balance = dialog.findViewById(R.id.AccountBalance);
+                final TextView finalPrice = dialog.findViewById(R.id.finalPrice);
+                final ImageButton buttonAdd = dialog.findViewById(R.id.plusButton);
+                final ImageButton buttonRemove = dialog.findViewById(R.id.removeButton);
+                final EditText editAmount = dialog.findViewById(R.id.editAmount);
+                final EditText editAddress = dialog.findViewById(R.id.editAddress);
+                final Button buyNow = dialog.findViewById(R.id.buttonBuyNow);
+                final Button cancel = dialog.findViewById(R.id.buttonCancel);
 
+                totalItem = 1;
+                totalPrice = product.price;
+                editAmount.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (editAmount.getText().toString().equals("")) {
+
+                        } else {
+                            totalItem = Integer.valueOf(editAmount.getText().toString());
+                            totalPrice = product.price * totalItem - (product.price * (product.discount/100));
+                            finalPrice.setText("Rp. " + totalPrice);
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+                productName.setText(product.name);
+                productWeight.setText(product.weight + " Kg");
+                productCondition.setText(condition);
+                productDiscount.setText(product.discount + " %");
+                productShipmentplan.setText(shipmentPlan);
+                productCategory.setText(product.category + "");
+                balance.setText("Rp"+ account.balance);
+                finalPrice.setText("Rp" + product.price);
+                dialog.show();
+            }
+        });
         dialog.show();
     }
 

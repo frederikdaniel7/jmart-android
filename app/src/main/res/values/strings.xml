@@ -21,6 +21,8 @@
     <string name="discount">Discount</string>
     <string name="shipmen_plan">Shipmen Plan</string>
     <string name="category">Category</string>
+    <string name="shipment_plan">Shipment plan</string>
+
 
     <string-array name="shipmentPlans">
         <item>INSTANT</item>
