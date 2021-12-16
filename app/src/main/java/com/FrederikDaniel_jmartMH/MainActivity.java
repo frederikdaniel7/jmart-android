@@ -38,9 +38,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.FrederikDaniel_jmartMH.model.Account;
+import com.FrederikDaniel_jmartMH.model.Payment;
 import com.FrederikDaniel_jmartMH.model.Product;
 import com.FrederikDaniel_jmartMH.model.ProductCategory;
 import com.FrederikDaniel_jmartMH.request.FilterRequest;
+import com.FrederikDaniel_jmartMH.request.PaymentRequest;
 import com.FrederikDaniel_jmartMH.request.RequestFactory;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -52,6 +54,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
@@ -80,6 +83,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
     private TabLayout tab_Layout;
     private String shipmentPlan;
     private String condition;
+    private Payment payment = new Payment();
     public static String[] productCategory = {"BOOK", "KITCHEN", "ELECTRONIC", "FASHION", "GAMING", "GADGET", "MOTHERCARE", "COSMETICS",
             "HEALTHCARE", "FURNITURE", "JEWELRY", "TOYS", "FNB", "STATIONERY", "SPORTS", "AUTOMOTIVE",
             "PETCARE", "ART_CRAFT", "CARPENTRY", "MISCELLANEOUS", "PROPERTY", "TRAVEL", "WEDDING"};
@@ -110,6 +114,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         buttonPrev.setOnClickListener(this);
         buttonApply.setOnClickListener(this);
         buttonClear.setOnClickListener(this);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -361,6 +366,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
                 final Button cancel = dialog.findViewById(R.id.buttonCancel);
 
                 totalItem = 1;
+
                 totalPrice = product.price;
                 editAmount.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -374,7 +380,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
 
                         } else {
                             totalItem = Integer.valueOf(editAmount.getText().toString());
-                            totalPrice = product.price * totalItem - (product.price * (product.discount/100));
+                            totalPrice = (product.price - (product.price * (product.discount/100))) * totalItem ;
                             finalPrice.setText("Rp. " + totalPrice);
                         }
                     }
@@ -390,14 +396,109 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
                 productDiscount.setText(product.discount + " %");
                 productShipmentplan.setText(shipmentPlan);
                 productCategory.setText(product.category + "");
-                balance.setText("Rp"+ account.balance);
-                finalPrice.setText("Rp" + product.price);
+                balance.setText("Rp" + account.balance);
+                totalPrice = (product.price - (product.price * (product.discount/100))) * totalItem ;
+                finalPrice.setText("Rp" + totalPrice);
+
+                buttonRemove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (totalItem > 1) {
+                            totalItem--;
+                            editAmount.setText(Integer.toString(totalItem));
+                        }
+                    }
+                });
+                buttonAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        totalItem++;
+                        editAmount.setText(Integer.toString(totalItem));
+                    }
+                });
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                buyNow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean isEmptyFields = false;
+                        if (TextUtils.isEmpty(editAmount.getText().toString())) {
+                            isEmptyFields = true;
+                            editAmount.setError("This bracket must be filled");
+                        }
+                        if (TextUtils.isEmpty(editAddress.getText().toString())) {
+                            isEmptyFields = true;
+                            editAddress.setError("This bracket must be filled");
+                        }
+                        if (!isEmptyFields) {
+                            if (totalPrice < account.balance) {
+                                Response.Listener<String> listenerCreatePayment = new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        JSONObject object = null;
+                                        try {
+                                            object = new JSONObject(response);
+                                            if (object != null) {
+                                                Toast.makeText(MainActivity.this, "Payment Success!", Toast.LENGTH_SHORT).show();
+                                                refreshData();
+                                                dialog.dismiss();
+                                            }
+                                            payment = gson.fromJson(response, Payment.class);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                };
+
+                                Response.ErrorListener errorListenerCreatePayment = new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(MainActivity.this, "Payment Failed", Toast.LENGTH_SHORT).show();
+                                        Log.d("ERROR", error.toString());
+                                    }
+                                };
+                                PaymentRequest createPaymentRequest = new PaymentRequest(account.id, product.id, totalItem, editAddress.getText().toString(), product.shipmentPlans, product.accountId, listenerCreatePayment, errorListenerCreatePayment);
+                                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                                queue.add(createPaymentRequest);
+                            } else {
+                                Toast.makeText(MainActivity.this, "Balance Insufficient", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
                 dialog.show();
             }
         });
         dialog.show();
     }
+    public void refreshData() {
+        Response.Listener<String> listener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject object = new JSONObject(response);
+                    account = gson.fromJson(response, Account.class);
+                    Log.d("MainActivity(Rfrsh)", "Data: " + account.balance);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ErrorResponse", "Error: " + error);
+                Toast.makeText(MainActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(RequestFactory.getById("account", account.id, listener, errorListener));
+    }
 
 
     @Override

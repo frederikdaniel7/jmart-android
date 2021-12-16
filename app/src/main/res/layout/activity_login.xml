@@ -39,8 +39,9 @@
       android:text="LOGIN"
       android:textSize="16dp"
       android:textColor="#000000"
+      android:backgroundTint="#BAB9B9"
       android:minHeight="48dp"
-      android:backgroundTint="#BAB9B9" />
+       />
   <TextView
       android:id="@+id/id_RegisterButton"
       android:layout_width="wrap_content"

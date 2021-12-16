@@ -13,10 +13,10 @@
         android:theme="@style/Theme.Jmartandroid"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".PaymentDialog"
+            android:name=".InvoiceCardView"
             android:exported="false" />
         <activity
-            android:name=".ProductDetailDialog"
+            android:name=".StoreInvoiceActivity"
             android:exported="false" />
         <activity
             android:name=".CreateProductActivity"

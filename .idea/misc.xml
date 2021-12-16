@@ -7,14 +7,17 @@
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/drawable/backgroundshape.xml" value="0.33489583333333334" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/drawable/ic_baseline_add_circle_24.xml" value="0.2526041666666667" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/drawable/ic_baseline_add_circle_outline_24.xml" value="0.2526041666666667" />
+        <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/drawable/ic_baseline_keyboard_arrow_down_24.xml" value="0.2526041666666667" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/drawable/ic_launcher_background.xml" value="0.28055555555555556" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_about_me.xml" value="0.33" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_create_product.xml" value="0.33" />
+        <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_invoice_card_view.xml" value="0.5" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_payment_dialog.xml" value="0.25" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_product_detail_dialog.xml" value="0.33" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_register.xml" value="0.33" />
+        <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/activity_store_invoice.xml" value="0.35260416666666666" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/fragment_filter.xml" value="0.25" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/fragment_product.xml" value="0.33" />
         <entry key="..\:/Tugas/Sem 5/oop/jmartandroid/app/src/main/res/layout/product_list.xml" value="0.20052083333333334" />

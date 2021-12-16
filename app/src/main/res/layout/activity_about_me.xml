@@ -147,6 +147,18 @@
 
     </LinearLayout>
     <Button
+        android:id="@+id/AccountInvoiceButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Account Invoice"
+        android:layout_gravity="center"
+        android:backgroundTint="#C1C1C1"
+        android:textColor="@android:color/black"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:cornerRadius="1dp"/>
+
+    <Button
         android:id="@+id/registerStoreBT"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -342,7 +354,25 @@
             android:gravity="right"
             android:text="18012931293" />
       </LinearLayout>
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="10dp"
+          android:orientation="horizontal"
+          android:gravity="center"
+          >
+        <Button
+            android:id="@+id/buttonInvoice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:backgroundTint="#C1C1C1"
+            android:text="INVOICE"
+            android:textColor="@android:color/black"
+            app:cornerRadius="1dp"
+          />
 
+      </LinearLayout>
 
     </LinearLayout>
 

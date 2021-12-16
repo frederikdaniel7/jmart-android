@@ -1,6 +1,8 @@
 package com.FrederikDaniel_jmartMH;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.FrederikDaniel_jmartMH.model.Account;
+import com.FrederikDaniel_jmartMH.model.Payment;
 import com.FrederikDaniel_jmartMH.model.Store;
 import com.FrederikDaniel_jmartMH.request.RegisterStoreRequest;
 import com.FrederikDaniel_jmartMH.request.RequestFactory;
@@ -26,7 +29,7 @@ import org.json.JSONObject;
 
 public class AboutMeActivity extends AppCompatActivity {
 
-    private Button registerstorebutton,registerbutton,cancelbutton,topupbutton;
+    private Button registerstorebutton,registerbutton,cancelbutton,topupbutton, invoiceButton;
     private TextView tvName, tvEmail, tvBalance, tvStoreName, tvStoreAddress, tvStorePhoneNumber;
     private EditText editTopup, editName, editAddress, editPhoneNumber;
     private Account account;
@@ -40,27 +43,21 @@ public class AboutMeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_me);
 
-        //Button
         topupbutton = findViewById(R.id.TopUpBT);
         registerstorebutton = findViewById(R.id.registerStoreBT);
         registerbutton = findViewById(R.id.RegisterBT);
         cancelbutton = findViewById(R.id.cancelBT);
-
-        //TextView
+        invoiceButton = findViewById(R.id.buttonInvoice);
         tvName = findViewById(R.id.nameAbt);
         tvEmail = findViewById(R.id.emailAbt);
         tvBalance = findViewById(R.id.balanceAbt);
         tvStoreName = findViewById(R.id.shopname);
         tvStoreAddress = findViewById(R.id.shopaddress);
         tvStorePhoneNumber = findViewById(R.id.shopphonenumber);
-
-        //EditText
         editTopup = findViewById(R.id.editTopUp);
         editName = findViewById(R.id.editName);
         editAddress = findViewById(R.id.editAddress);
         editPhoneNumber = findViewById(R.id.editPhone);
-
-        //Penampilan data Account
         account = LoginActivity.getLoggedAccount();
         tvName.setText(account.name);
         tvEmail.setText(account.email);
@@ -84,6 +81,14 @@ public class AboutMeActivity extends AppCompatActivity {
             linearLayout2.setVisibility(View.GONE);
         }
 
+
+        invoiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent moveIntent = new Intent(AboutMeActivity.this, StoreInvoiceActivity.class);;
+                startActivity(moveIntent);
+            }
+        });
 
         topupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +120,7 @@ public class AboutMeActivity extends AppCompatActivity {
                     }
                 };
 
-                TopUpRequest topUpRequest = new TopUpRequest(account.id, amount, listener, errorListener);
+                TopUpRequest topUpRequest = new TopUpRequest(amount, account.id, listener, errorListener);
                 RequestQueue queue = Volley.newRequestQueue(AboutMeActivity.this);
                 queue.add(topUpRequest);
             }

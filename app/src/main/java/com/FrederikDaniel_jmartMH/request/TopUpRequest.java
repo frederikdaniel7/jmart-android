@@ -10,10 +10,9 @@ public class TopUpRequest extends StringRequest {
     private static final String URL_FORMAT = "http://10.0.2.2:5000/account/%d/topUp";
     private final Map<String, String> params;
 
-    public TopUpRequest(int id, double balance, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+    public TopUpRequest(double balance, int id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, String.format(URL_FORMAT, id), listener, errorListener);
         params = new HashMap<>();
-        params.put("id", String.valueOf(id));
         params.put("balance", String.valueOf(balance));
     }
 

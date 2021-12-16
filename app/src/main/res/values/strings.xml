@@ -22,6 +22,11 @@
     <string name="shipmen_plan">Shipmen Plan</string>
     <string name="category">Category</string>
     <string name="shipment_plan">Shipment plan</string>
+    <string name="invoice">Invoice</string>
+    <string name="store">Store</string>
+    <string name="status">Status</string>
+    <string name="date">Date</string>
+    <string name="cost">Cost</string>
 
 
     <string-array name="shipmentPlans">
