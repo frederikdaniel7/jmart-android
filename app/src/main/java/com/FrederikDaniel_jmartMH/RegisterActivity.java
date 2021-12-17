@@ -2,6 +2,7 @@ package com.FrederikDaniel_jmartMH;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,10 +38,12 @@ public class RegisterActivity extends AppCompatActivity {
                 Response.Listener<String> listener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Intent moveIntent = new Intent(RegisterActivity.this, LoginActivity.class);
                         try {
                             JSONObject object = new JSONObject(response);
                             if(object != null){
                                 Toast.makeText(RegisterActivity.this, "Register Successfully", Toast.LENGTH_SHORT).show();
+                                startActivity(moveIntent);
                             }
                         }catch (JSONException e) {
                             e.printStackTrace();

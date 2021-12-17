@@ -60,16 +60,22 @@ import org.w3c.dom.Text;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Activity berupa menu utama, menampilkan semua produk sesuai dengan file JSon dan opsi untuk menggunakan Filter
+ * @author Frederik Daniel Joshua H
+ * @version 15 Desember 2021
+ */
 public class MainActivity<account> extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
     public static List<Product> productList = new ArrayList<>();
+    public static List<Product> productListdummy = new ArrayList<>();
     public static List<String> productnameList = new ArrayList<>();
     private TextView textView;
     private EditText editPage, editName, editLowestprice, editHighestprice;
     private ListView listView;
+    public boolean isEmpty = false;
     public boolean applyFilter = false;
     private Account account = LoginActivity.getLoggedAccount();;
-    private Button buttonGo, buttonNext, buttonPrev, buttonApply, buttonClear;
+    private Button buttonGo, buttonNext, buttonPrev, buttonApply, buttonClear, pageMark;
     ;
     private CheckBox checkBoxNew, checkBoxUsed;
     private Spinner spinnerCategory;
@@ -88,6 +94,10 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
             "HEALTHCARE", "FURNITURE", "JEWELRY", "TOYS", "FNB", "STATIONERY", "SPORTS", "AUTOMOTIVE",
             "PETCARE", "ART_CRAFT", "CARPENTRY", "MISCELLANEOUS", "PROPERTY", "TRAVEL", "WEDDING"};
 
+    /**
+     * Mehod inisialisasi variabel untuk menyimpan id layout dan event handler activitynya
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,8 +177,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
     public void setActivityMode(int modeSelected){
         Intent moveIntent;
         switch (modeSelected){
-            case R.id.search:
-                break;
+
             case R.id.addbox:
                 moveIntent = new Intent(MainActivity.this, CreateProductActivity.class);
                 startActivity(moveIntent);
@@ -182,17 +191,35 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         }
     }
 
+    /**
+     * Method untuk menampilkan list view berisikan produk dengan jumlah yang disesuaikan
+     * @param page
+     * @param pageSize
+     */
     public void ShowProductList(int page, int pageSize){
         Response.Listener<String> stringListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    productList.clear();
+
                     productnameList.clear();
                     JSONArray jsonArray = new JSONArray(response);
                     Type productlistType = new TypeToken<ArrayList<Product>>(){}.getType();
-                    productList = gson.fromJson(response, productlistType);
-                    Log.d("ProductFragment", "" + productList.get(0).getName());
+                    productListdummy = gson.fromJson(response, productlistType);
+                    if(productListdummy!= null)
+                    {
+                        productList.clear();
+                        productList = productListdummy;
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "next Page is empty", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (productList == null)
+                    {
+                       isEmpty = true;
+                    }
+//                    Log.d("ProductFragment", "" + productList.get(0).getName());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -215,6 +242,12 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(RequestFactory.getPage("product", page, pageSize, stringListener, errorListener));
     }
+
+    /**
+     * Method untuk menampilkan produk berdasarkan Filter yang dimasukkan
+     * @param page
+     * @param pageSize
+     */
     public void GetshowFilterProductList(int page, int pageSize) {
         String filteredname = editName.getText().toString();
         Integer minP;
@@ -280,6 +313,13 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         queue.add(filterRequest);
     }
 
+    /**
+     * Method yang akan menampilkan detail produk melalui dialog dan juga disertai dengan konfirmasi pembelian produk
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Product product = productList.get(position);
@@ -312,7 +352,11 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         final Button buyButton = dialog.findViewById(R.id.buttonBuy);
         final ImageButton detailButton = dialog.findViewById(R.id.detailButton);
         final LinearLayout detailView = dialog.findViewById(R.id.detailView);
+
         detailButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * function untuk menunjukkan detail product
+             */
             @Override
             public void onClick(View v) {
                 if(detailView.getVisibility()== View.GONE)
@@ -329,7 +373,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         });
 
         condition = "New";
-        if (product.getconditionUsed()) {
+        if (product.isConditionUsed()) {
             condition = "Used";
         } else {
             condition = "New";
@@ -356,6 +400,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
                 final TextView productDiscount = dialog.findViewById(R.id.productDiscount);
                 final TextView productShipmentplan = dialog.findViewById(R.id.productShipmentplan);
                 final TextView productCategory = dialog.findViewById(R.id.productCategory);
+
                 final TextView balance = dialog.findViewById(R.id.AccountBalance);
                 final TextView finalPrice = dialog.findViewById(R.id.finalPrice);
                 final ImageButton buttonAdd = dialog.findViewById(R.id.plusButton);
@@ -364,7 +409,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
                 final EditText editAddress = dialog.findViewById(R.id.editAddress);
                 final Button buyNow = dialog.findViewById(R.id.buttonBuyNow);
                 final Button cancel = dialog.findViewById(R.id.buttonCancel);
-
+                takeBalance(balance);
                 totalItem = 1;
 
                 totalPrice = product.price;
@@ -475,6 +520,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         });
         dialog.show();
     }
+
     public void refreshData() {
         Response.Listener<String> listener = new Response.Listener<String>() {
             @Override
@@ -482,7 +528,7 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
                 try {
                     JSONObject object = new JSONObject(response);
                     account = gson.fromJson(response, Account.class);
-                    Log.d("MainActivity(Rfrsh)", "Data: " + account.balance);
+                    Log.d("MainActivity(Rfresh)", "Data: " + account.balance);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -500,7 +546,10 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
         queue.add(RequestFactory.getById("account", account.id, listener, errorListener));
     }
 
-
+    /**
+     * Method yang digunakan untuk mengeset respon dari button yang ada pada Main Activity
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.goButton)
@@ -514,15 +563,20 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
             }
         }
         else if(v.getId() == R.id.nextButton){
-            page++;
+            if (!isEmpty) {
+                page++;
+            }
+
             if (applyFilter) {
                 GetshowFilterProductList(page, 3);
             } else {
-                ShowProductList(page,3);
+                ShowProductList(page, 3);
             }
         }
         else if(v.getId() == R.id.prevButton){
+            isEmpty=false;
             if (page == 0) {
+
                 Toast.makeText(MainActivity.this, "You're already in Page 1", Toast.LENGTH_SHORT).show();
             } else if (page >= 1) {
                 page--;
@@ -549,6 +603,36 @@ public class MainActivity<account> extends AppCompatActivity implements View.OnC
             editPage.setText("" + 1);
             Toast.makeText(MainActivity.this, "Filter Cleared!", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    /**
+     * Method untuk mengupdate balance yang akan ditampilkan pada dialog pembelian Produk
+     * @param balance
+     */
+    public void takeBalance(TextView balance) {
+
+        Response.Listener<String> listener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject object = new JSONObject(response);
+                    account = gson.fromJson(response, Account.class);
+                    balance.setText("Rp" + account.balance);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        queue.add(RequestFactory.getById("account", account.id, listener, errorListener));
 
     }
 

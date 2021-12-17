@@ -44,15 +44,12 @@ public class CreateProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_product);
 
-        //EditText
         editNameProduct = findViewById(R.id.prodName);
         editWeightProduct = findViewById(R.id.prodWeight);
         editPriceProduct = findViewById(R.id.prodPrice);
         editDiscountProduct = findViewById(R.id.prodDiscount);
-        //Button
         createProductButton = findViewById(R.id.CreateProduct);
         cancelButton = findViewById(R.id.CancelProduct);
-        //Radio Button
         radiobuttonNew = findViewById(R.id.newCondition);
         radiobuttonUsed = findViewById(R.id.usedCondition);
 
@@ -61,7 +58,7 @@ public class CreateProductActivity extends AppCompatActivity {
             productCategoryList.add(category.toString());
         }
 
-        //Spinner
+
         categorySpinner = findViewById(R.id.spinnerCategory);
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, productCategoryList);
         categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -76,7 +73,7 @@ public class CreateProductActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(CreateProductActivity.this,MainActivity.class);
-                Toast.makeText(getApplicationContext(), "Cancel Clicked", Toast.LENGTH_SHORT).show();
+
                 startActivity(i);
             }
         });
@@ -105,6 +102,10 @@ public class CreateProductActivity extends AppCompatActivity {
                             object = new JSONObject(response);
                             if(object != null){
                                 Toast.makeText(CreateProductActivity.this,"Create Product Success!",Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(CreateProductActivity.this,"Register Store First",Toast.LENGTH_SHORT).show();
                             }
                             product = gson.fromJson(response, Product.class);
                             Intent intent = new Intent(CreateProductActivity.this,MainActivity.class);

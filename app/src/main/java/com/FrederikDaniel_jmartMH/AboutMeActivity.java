@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,11 +31,11 @@ import org.json.JSONObject;
 
 public class AboutMeActivity extends AppCompatActivity {
 
-    private Button registerstorebutton,registerbutton,cancelbutton,topupbutton, invoiceButton;
+    private Button registerstorebutton,registerbutton,cancelbutton,topupbutton, invoiceButton, accountInvoiceButton;
     private TextView tvName, tvEmail, tvBalance, tvStoreName, tvStoreAddress, tvStorePhoneNumber;
     private EditText editTopup, editName, editAddress, editPhoneNumber;
     private Account account;
-    private LinearLayout linearLayout1;
+    private ScrollView linearLayout1;
     private LinearLayout linearLayout2;
     private static final Gson gson = new Gson();
 
@@ -48,6 +50,7 @@ public class AboutMeActivity extends AppCompatActivity {
         registerbutton = findViewById(R.id.RegisterBT);
         cancelbutton = findViewById(R.id.cancelBT);
         invoiceButton = findViewById(R.id.buttonInvoice);
+        accountInvoiceButton = findViewById(R.id.AccountInvoiceButton);
         tvName = findViewById(R.id.nameAbt);
         tvEmail = findViewById(R.id.emailAbt);
         tvBalance = findViewById(R.id.balanceAbt);
@@ -61,8 +64,8 @@ public class AboutMeActivity extends AppCompatActivity {
         account = LoginActivity.getLoggedAccount();
         tvName.setText(account.name);
         tvEmail.setText(account.email);
-        tvBalance.setText("" + account.balance);
-
+//        tvBalance.setText("" + account.balance);
+        takeBalance();
         linearLayout1 = findViewById(R.id.LLRegis);
         linearLayout2 = findViewById(R.id.LLinfo);
 
@@ -81,6 +84,13 @@ public class AboutMeActivity extends AppCompatActivity {
             linearLayout2.setVisibility(View.GONE);
         }
 
+        accountInvoiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent moveIntent = new Intent(AboutMeActivity.this, UserInvoice.class);;
+                startActivity(moveIntent);
+            }
+        });
 
         invoiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,34 +105,40 @@ public class AboutMeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String amountTopUp = editTopup.getText().toString().trim();
                 double amount = Double.valueOf(amountTopUp);
-
-
-                Response.Listener<String> listener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Boolean object = Boolean.valueOf(response);
-                        if (object) {
-                            Toast.makeText(AboutMeActivity.this, "Top Up Success!", Toast.LENGTH_SHORT).show();
-                            takeBalance();
-                            editTopup.getText().clear();
-                        } else {
-                            Toast.makeText(AboutMeActivity.this, "Top Up Failed!", Toast.LENGTH_SHORT).show();
+                boolean isEmptyFields = false;
+                if (TextUtils.isEmpty(editTopup.getText().toString())) {
+                    isEmptyFields = true;
+                    editTopup.setError("This bracket must be filled");
+                }
+                if(!isEmptyFields) {
+                    Response.Listener<String> listener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Boolean object = Boolean.valueOf(response);
+                            if (object) {
+                                Toast.makeText(AboutMeActivity.this, "Top Up Success!", Toast.LENGTH_SHORT).show();
+                                takeBalance();
+                                editTopup.getText().clear();
+                            } else {
+                                Toast.makeText(AboutMeActivity.this, "Top Up Failed!", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                };
+
+                    };
 
 
-                Response.ErrorListener errorListener = new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AboutMeActivity.this, "Top Up Failed due to Connection!", Toast.LENGTH_SHORT).show();
-                        Log.d("ERROR", error.toString());
-                    }
-                };
+                    Response.ErrorListener errorListener = new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(AboutMeActivity.this, "Top Up Failed due to Connection!", Toast.LENGTH_SHORT).show();
+                            Log.d("ERROR", error.toString());
+                        }
+                    };
 
-                TopUpRequest topUpRequest = new TopUpRequest(amount, account.id, listener, errorListener);
-                RequestQueue queue = Volley.newRequestQueue(AboutMeActivity.this);
-                queue.add(topUpRequest);
+                    TopUpRequest topUpRequest = new TopUpRequest(amount, account.id, listener, errorListener);
+                    RequestQueue queue = Volley.newRequestQueue(AboutMeActivity.this);
+                    queue.add(topUpRequest);
+                }
             }
         });
 

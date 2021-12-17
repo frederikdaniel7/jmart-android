@@ -28,7 +28,7 @@ import org.json.JSONException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class StoreInvoiceActivity extends AppCompatActivity {
+public class UserInvoice extends AppCompatActivity {
     private RecyclerView recyclerViewInvoice;
     private static final Gson gson = new Gson();
     private ArrayList<Payment> userInvoiceList = new ArrayList<>();
@@ -36,7 +36,7 @@ public class StoreInvoiceActivity extends AppCompatActivity {
     private Account account = LoginActivity.getLoggedAccount();
     private MenuItem storeName, itemPerson, itemStore;
     private TextView Title;
-    private TextView StoreName;
+    private TextView StoreName, UserName;
     public static boolean isUser = true;
     private Store store = new Store();
 
@@ -44,29 +44,31 @@ public class StoreInvoiceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_store_invoice);
+        setContentView(R.layout.activity_user_invoice);
         Title = findViewById(R.id.invoiceHeader);
 
-        StoreName = findViewById(R.id.StoreInvoice);
+        UserName = findViewById(R.id.UserInvoice);
         recyclerViewInvoice = findViewById(R.id.invoiceCardview);
-        StoreName.setText(account.store.name);
-        InvoiceCardView.InvoiceConfirmation = true;
-        getStoreInvoiceList();
+        UserName.setText(account.name);
+        InvoiceCardView.InvoiceConfirmation = false;
+        getUserInvoiceList();
     }
 
 
-    private void getStoreInvoiceList() {
+    private void getUserInvoiceList() {
         Response.Listener<String> listener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    storeInvoiceList.clear();
+                    userInvoiceList.clear();
                     JSONArray object = new JSONArray(response);
                     Type paymentListType = new TypeToken<ArrayList<Payment>>() {
+
                     }.getType();
-                    storeInvoiceList = gson.fromJson(response, paymentListType);
-                    recyclerViewInvoice.setLayoutManager(new LinearLayoutManager(StoreInvoiceActivity.this));
-                    InvoiceCardView invoiceCardViewAdapter = new InvoiceCardView(storeInvoiceList);
+                    userInvoiceList = gson.fromJson(response, paymentListType);
+                    Toast.makeText(UserInvoice.this,"testInvoice"+userInvoiceList.get(0).buyerId, Toast.LENGTH_SHORT).show();
+                    recyclerViewInvoice.setLayoutManager(new LinearLayoutManager(UserInvoice.this));
+                    InvoiceCardView invoiceCardViewAdapter = new InvoiceCardView(userInvoiceList);
                     recyclerViewInvoice.setAdapter(invoiceCardViewAdapter);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -77,13 +79,15 @@ public class StoreInvoiceActivity extends AppCompatActivity {
         Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(StoreInvoiceActivity.this, "Get List Failed due to Connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserInvoice.this, "Get List Failed due to Connection", Toast.LENGTH_SHORT).show();
             }
         };
 
-        InvoiceRequest invoiceRequest = new InvoiceRequest(account.id, false, listener, errorListener);
-        RequestQueue queue = Volley.newRequestQueue(StoreInvoiceActivity.this);
+        InvoiceRequest invoiceRequest = new InvoiceRequest(account.id, true, listener, errorListener);
+        RequestQueue queue = Volley.newRequestQueue(UserInvoice.this);
         queue.add(invoiceRequest);
     }
+
+
 
 }

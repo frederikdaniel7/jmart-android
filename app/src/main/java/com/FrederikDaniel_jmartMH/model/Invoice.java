@@ -2,7 +2,7 @@ package com.FrederikDaniel_jmartMH.model;
 
 import java.util.Date;
 
-public abstract class Invoice extends Serializable{
+public   class Invoice extends Serializable{
     public enum Status
     {
         WAITING_CONFIRMATION,
