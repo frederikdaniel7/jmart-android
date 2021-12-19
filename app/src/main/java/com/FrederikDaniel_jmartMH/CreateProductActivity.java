@@ -78,7 +78,11 @@ public class CreateProductActivity extends AppCompatActivity {
             }
         });
 
+
         createProductButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             *
+             */
             @Override
             public void onClick(View v) {
                 Account account = LoginActivity.getLoggedAccount();

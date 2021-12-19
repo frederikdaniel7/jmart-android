@@ -28,6 +28,9 @@ import org.json.JSONException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+/**
+ * Class yang akan menampilkan Invoice pada bagian Store
+ */
 public class StoreInvoiceActivity extends AppCompatActivity {
     private RecyclerView recyclerViewInvoice;
     private static final Gson gson = new Gson();
@@ -40,7 +43,10 @@ public class StoreInvoiceActivity extends AppCompatActivity {
     public static boolean isUser = true;
     private Store store = new Store();
 
-
+    /**
+     * Function untuk menunjukkan List Card View Invoice
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +60,9 @@ public class StoreInvoiceActivity extends AppCompatActivity {
         getStoreInvoiceList();
     }
 
-
+    /**
+     * Function untuk mengambil dan menyimpan data store yang dibeli productnya pada Invoice
+     */
     private void getStoreInvoiceList() {
         Response.Listener<String> listener = new Response.Listener<String>() {
             @Override

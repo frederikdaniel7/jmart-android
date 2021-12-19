@@ -2,6 +2,9 @@ package com.FrederikDaniel_jmartMH.model;
 
 import java.util.Date;
 
+/**
+ * Class pada package model yang akan membuat object Invoice
+ */
 public   class Invoice extends Serializable{
     public enum Status
     {

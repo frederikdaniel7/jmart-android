@@ -36,6 +36,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Class yang akan menampilkan Invoice dalam bentuk Card View yang akan masuk ke dalam StoreInvoice Activity
+ * maupun UserInvoiceActivity
+ */
 public class InvoiceCardView extends RecyclerView.Adapter<InvoiceCardView.InvoiceCardViewViewHolder> {
     public static Boolean InvoiceConfirmation = true;
     private ArrayList<Payment> listPayment = new ArrayList<>();
@@ -56,7 +60,12 @@ public class InvoiceCardView extends RecyclerView.Adapter<InvoiceCardView.Invoic
 
     }
 
-
+    /**
+     * Function yang akan menampilkan invoice dengan menampilkan detail product pada invoice
+     * dan juga detail akun pembeli dan penjual (store) dari product
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull InvoiceCardViewViewHolder holder, int position) {
         Payment payment = listPayment.get(position);
@@ -231,7 +240,7 @@ public class InvoiceCardView extends RecyclerView.Adapter<InvoiceCardView.Invoic
     }
 
     /**
-     * Method yang akan menunj
+     * Method yang akan menunjukkan data pada product yang dibeli pada invoice
      * @param holder
      * @param payment
      */
@@ -262,6 +271,11 @@ public class InvoiceCardView extends RecyclerView.Adapter<InvoiceCardView.Invoic
         queue.add(RequestFactory.getById("product", payment.productId, listenerProduct, errorListener));
     }
 
+    /**
+     * Function untuk menyimpan data pada account yang memesan product di invoice
+     * @param holder
+     * @param payment
+     */
     private void getAccountData(InvoiceCardViewViewHolder holder, Payment payment )
     {
         Response.Listener<String> listener = new Response.Listener<String>() {
@@ -289,6 +303,11 @@ public class InvoiceCardView extends RecyclerView.Adapter<InvoiceCardView.Invoic
         queue.add(RequestFactory.getById("account", payment.buyerId, listener, errorListener));
     }
 
+    /**
+     * Function untuk menyimpan data pada store pemilik product di invoice
+     * @param holder
+     * @param payment
+     */
     private void getStoreData(InvoiceCardViewViewHolder holder, Payment payment )
     {
         Response.Listener<String> listener = new Response.Listener<String>() {
@@ -326,12 +345,18 @@ public class InvoiceCardView extends RecyclerView.Adapter<InvoiceCardView.Invoic
 
     }
 
-
+    /**
+     * Function untuk menampilkan invoice sesuai dengan jumlah invoice
+     * @return
+     */
     @Override
     public int getItemCount() {
         return listPayment.size();
     }
 
+    /**
+     * Subclass yang akan menyimpan data dalam holder
+     */
     class InvoiceCardViewViewHolder extends RecyclerView.ViewHolder{
         TextView noInvoice, invoiceName, invoiceStatus, invoiceDate, invoiceAddress, invoiceCost, invoiceOwner;
         ImageButton invoiceDetailButton;

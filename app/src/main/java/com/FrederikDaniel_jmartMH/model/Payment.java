@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-
+/**
+ * Class pada package model yang akan membuat object Payment
+ */
 public class Payment extends Invoice{
     public ArrayList<Record> history = new ArrayList<>();
     public int productCount;

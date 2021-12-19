@@ -30,6 +30,9 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * Class yang akan bertanggung jawab dalam melakukan Login di mana parameter yang dimasukkan akan dicek jika sesuai dengan data pada account di backend
+ */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, Response.ErrorListener, Response.Listener<String> {
 
     private static final Gson gson = new Gson();
@@ -55,6 +58,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         registerButton.setOnClickListener(this);
     }
 
+    /**
+     * Function yang akan mengecek dan menyocokkan data email dan password pada account ketika ditekan Login
+     * dan akan ke Activity Register ketika ditekan button Register
+     * @param v
+     */
     @Override
     public void onClick( View v) {
         if(v.getId()==R.id.id_LoginButton){

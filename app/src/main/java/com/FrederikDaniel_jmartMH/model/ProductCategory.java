@@ -1,5 +1,8 @@
 package com.FrederikDaniel_jmartMH.model;
 
+/**
+ * Enum yang menyimpan nilai ProductCategory yang dapat digunakan pada berbagai class
+ */
 public enum ProductCategory {
     BOOK,
     KITCHEN,

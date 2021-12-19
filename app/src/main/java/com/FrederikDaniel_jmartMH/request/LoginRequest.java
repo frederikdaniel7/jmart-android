@@ -6,11 +6,21 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-//perbaikan CS9
+
+/**
+ * Class untuk melakukan verifikasi account ketika melakukan email
+ */
 public class LoginRequest extends StringRequest {
     private static final String URL = "http://10.0.2.2:5000/account/login";
     private final Map<String,String> params;
 
+    /**
+     * Method Constr
+     * @param email
+     * @param password
+     * @param listener
+     * @param errorListener
+     */
     public LoginRequest(
             String email,
             String password,

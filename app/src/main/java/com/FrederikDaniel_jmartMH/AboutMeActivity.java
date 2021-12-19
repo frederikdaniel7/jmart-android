@@ -29,6 +29,9 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Class yang berfungsi untuk menyimpan semua fungsi untuk dijalankan ketika masuk ke Activity About me
+ */
 public class AboutMeActivity extends AppCompatActivity {
 
     private Button registerstorebutton,registerbutton,cancelbutton,topupbutton, invoiceButton, accountInvoiceButton;
@@ -39,7 +42,10 @@ public class AboutMeActivity extends AppCompatActivity {
     private LinearLayout linearLayout2;
     private static final Gson gson = new Gson();
 
-
+    /**
+     * Method yang akan menampilkan layout sesuai dengan profile account dan juga profile store
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +107,10 @@ public class AboutMeActivity extends AppCompatActivity {
         });
 
         topupbutton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Fucntion yang akan menambahkan balance ke dalam Account.json menggunakan edit text dan button topup
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 String amountTopUp = editTopup.getText().toString().trim();
@@ -142,7 +152,6 @@ public class AboutMeActivity extends AppCompatActivity {
             }
         });
 
-
         registerstorebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -155,6 +164,9 @@ public class AboutMeActivity extends AppCompatActivity {
 
         registerbutton.setOnClickListener(new View.OnClickListener() {
             @Override
+            /**
+             * Method untuk memasukkan data yang diinput pada bracket register store dan menyimpan ke dalam json
+             */
             public void onClick(View v) {
                 String storeName = editName.getText().toString();
                 String storeAddress = editAddress.getText().toString();
@@ -210,6 +222,9 @@ public class AboutMeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Method untuk mengganti nilai balance setiap kali top up dilakukan
+     */
     public void takeBalance() {
 
         Response.Listener<String> listener = new Response.Listener<String>() {

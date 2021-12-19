@@ -14,7 +14,18 @@ public class PaymentRequest extends StringRequest {
 
     private final Map<String, String> params;
 
-    //Create
+    /**
+     * Method Constructor untuk melakukan POST payment menggunakan detail dari product
+     * @param buyerId
+     * @param productId
+     * @param productCount
+     * @param shipmentAddress
+     * @param shipmentPlan
+     * @param storeId
+     * @param listener
+     * @param errorListener
+     */
+
     public PaymentRequest(int buyerId, int productId, int productCount, String shipmentAddress, byte shipmentPlan, int storeId, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, CREATE_URL, listener, errorListener);
         params = new HashMap<>();
@@ -26,22 +37,38 @@ public class PaymentRequest extends StringRequest {
         params.put("storeId", String.valueOf(storeId));
     }
 
-
-    //Accept
+    /**
+     * Method untuk melakukan method POST terhadap payment yang akan di-accept/diterima
+     * @param id
+     * @param listener
+     * @param errorListener
+     */
     public PaymentRequest(int id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, String.format(ACCEPT_URL, id), listener, errorListener);
         params = new HashMap<>();
         params.put("id", String.valueOf(id));
     }
 
-    //Cancel
+    /**
+     * Method untuk melakukan method POST terhadap payment yang akan di-cancel/digagalkan
+     * @param listener
+     * @param id
+     * @param errorListener
+     */
     public PaymentRequest(Response.Listener<String> listener ,int id, Response.ErrorListener errorListener) {
         super(Method.POST, String.format(CANCEL_URL, id), listener, errorListener);
         params = new HashMap<>();
         params.put("id", String.valueOf(id));
     }
 
-    //Submit
+
+    /**
+     * Method untuk melakukan method POST terhadap payment yang akan diSubmit
+     * @param id
+     * @param receipt
+     * @param listener
+     * @param errorListener
+     */
     public PaymentRequest(int id, String receipt, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, String.format(SUBMIT_URL, id), listener, errorListener);
         params = new HashMap<>();

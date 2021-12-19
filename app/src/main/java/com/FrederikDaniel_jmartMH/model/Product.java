@@ -1,5 +1,9 @@
 package com.FrederikDaniel_jmartMH.model;
 
+
+/**
+ * Class pada package model yang akan membuat object Product dan juga berisikan method Getter Setter untuk mendapatkan value tertentu pada object
+ */
 public class Product extends Serializable {
     public int accountId;
     public double discount;

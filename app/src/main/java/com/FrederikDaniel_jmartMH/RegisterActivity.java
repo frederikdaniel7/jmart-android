@@ -20,7 +20,10 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-//perbaikan CS9
+
+/**
+ * Class untuk melakukan registrasi account dan juga memasukkan ke dalam Account.Json
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     @Override

@@ -2,6 +2,9 @@ package com.FrederikDaniel_jmartMH.model;
 
 import java.text.SimpleDateFormat;
 
+/**
+ * Class pada package model yang akan membuat object Shipment
+ */
 public class Shipment {
     public static final Plan INSTANT = new Plan((byte)(1 << 0));
     public static final Plan SAME_DAY = new Plan((byte)(1 << 1));
